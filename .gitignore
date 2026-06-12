@@ -33,3 +33,9 @@ webapp/
 !webapp/static/.gitkeep
 server.crt
 server.key
+
+### Lint ###
+.trunk
+
+## VS Code ###
+.vscode

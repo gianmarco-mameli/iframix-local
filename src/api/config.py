@@ -4,14 +4,16 @@ import os
 import threading
 
 SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DB_FILE = os.path.join(SCRIPT_DIR, "icharguard.db")
-PHOTOS_DIR = os.path.join(SCRIPT_DIR, "photos")
-PHOTOS_AI_DIR = os.path.join(SCRIPT_DIR, "photos_with_ai")
-PHOTOS_TEMP_DIR = os.path.join(SCRIPT_DIR, "photos_temp")
+# Override this with env var IFRAMIX_BASE_PATH to relocate runtime data.
+BASE_PATH = os.path.abspath(os.getenv("IFRAMIX_BASE_PATH", SCRIPT_DIR))
+DB_FILE = os.path.join(BASE_PATH, "icharguard.db")
+PHOTOS_DIR = os.path.join(BASE_PATH, "photos")
+PHOTOS_AI_DIR = os.path.join(BASE_PATH, "photos_with_ai")
+PHOTOS_TEMP_DIR = os.path.join(BASE_PATH, "photos_temp")
 # Downscaled JPEG thumbnails for the admin photo grid, generated on demand
 # and cached on disk under thumbnails/{normal,ai}/{device_id}/. Gitignored.
-THUMBNAILS_DIR = os.path.join(SCRIPT_DIR, "thumbnails")
-LOGS_DIR = os.path.join(SCRIPT_DIR, "logs")
+THUMBNAILS_DIR = os.path.join(BASE_PATH, "thumbnails")
+LOGS_DIR = os.path.join(BASE_PATH, "logs")
 WEBAPP_DIR = os.path.join(SCRIPT_DIR, "webapp")
 WEATHER_ICONS_DIR = os.path.join(SCRIPT_DIR, "weather_icons")
 MOSQUITTO_WS_HOST = "localhost"

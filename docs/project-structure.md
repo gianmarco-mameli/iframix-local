@@ -80,7 +80,7 @@ scripts/
   fetch-pad1-webapp-assets.py     # Pull the iPad 1 webapp bundles into webapp/pad1/
   fetch-download-assets.py        # Pull the /download page bundles into webapp/download/
   fetch-weather-icons.py          # Pull the QWeather S1 PNG catalog into weather_icons/
-  apply-local-index-html-patch.sh # Re-apply the local hostname/MQTT patch to a fresh
+  apply-local-index-html-patch.py # Re-apply the local hostname/MQTT patch to a fresh
                                   # cloud-built webapp/index.html (idempotent)
 docs/
   architecture.md                        # Architecture + MQTT message flow

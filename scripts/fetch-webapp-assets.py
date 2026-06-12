@@ -47,7 +47,7 @@ import os
 import re
 import shutil
 import socket
-import sys
+# import sys
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
@@ -151,12 +151,12 @@ def _patched_getaddrinfo(host, port, *args, **kwargs):
     return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port_int))]
 
 
-def install_pinned_resolver(host: str) -> str:
+def install_pinned_resolver(host: str, dns_server: str = DNS_SERVER) -> str:
     """Resolve ``host`` via DNS 8.8.8.8 and pin all later sockets to it."""
-    ip = dns_a_lookup(host)
+    ip = dns_a_lookup(host, dns_server=dns_server)
     if ip is None:
         raise SystemExit(
-            f"could not resolve {host} via DNS {DNS_SERVER} "
+            f"could not resolve {host} via DNS {dns_server} "
             "(network blocked or DNS server unreachable)")
     _PINNED_IPS[host] = ip
     socket.getaddrinfo = _patched_getaddrinfo
@@ -531,8 +531,8 @@ def step1_rename_previous(previous_version: str) -> None:
         print(f"  {label} -> {os.path.relpath(dst, REPO_ROOT)}")
 
 
-def step2_fetch_index() -> bytes:
-    print(f"[2/6] Fetching {UPSTREAM_BASE}/  (DNS via {DNS_SERVER})")
+def step2_fetch_index(dns_server: str = DNS_SERVER) -> bytes:
+    print(f"[2/6] Fetching {UPSTREAM_BASE}/  (DNS via {dns_server})")
     status, body, err = http_get(UPSTREAM_BASE + "/", max_attempts=2)
     if status != 200 or not body:
         raise SystemExit(
@@ -677,6 +677,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--skip-md", action="store_true",
         help="Skip step 5 (don't touch ASSETS_PER_APP_VERSION.md).")
+    parser.add_argument(
+        "--dns-server", default=DNS_SERVER,
+        help="DNS server for upstream resolution (default: %(default)s).")
     args = parser.parse_args(argv)
 
     new_version = args.version.strip()
@@ -687,7 +690,7 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"webapp directory not found: {WEBAPP_DIR}")
     if not os.path.isfile(ASSETS_MD):
         if not os.path.isfile(ASSETS_MD_TEMPLATE):
-          raise SystemExit(f"missing {ASSETS_MD_TEMPLATE}")
+            raise SystemExit(f"missing {ASSETS_MD_TEMPLATE}")
         print(f"Creating {ASSETS_MD} from template file {ASSETS_MD_TEMPLATE}")
         shutil.copyfile(ASSETS_MD_TEMPLATE, ASSETS_MD)
 
@@ -699,8 +702,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Previous version: {previous_version}")
     print(f"New version:      {new_version}")
 
-    ip = install_pinned_resolver(UPSTREAM_HOST)
-    print(f"Resolved {UPSTREAM_HOST} via {DNS_SERVER} -> {ip}")
+    ip = install_pinned_resolver(UPSTREAM_HOST, dns_server=args.dns_server)
+    print(f"Resolved {UPSTREAM_HOST} via {args.dns_server} -> {ip}")
     print()
 
     if not args.skip_rename:
@@ -708,7 +711,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print("[1/6] (skipped --skip-rename)")
 
-    html_body = step2_fetch_index()
+    html_body = step2_fetch_index(dns_server=args.dns_server)
     results: list[tuple[str, bool, str]] = []
     seed = step3_fetch_html_assets(html_body, results)
     fetched = step4_fetch_chunks(seed, results)

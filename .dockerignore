@@ -1,0 +1,9 @@
+# Exclude everything:
+*
+
+!scripts
+!src
+!webapp
+!*.py
+!requirements.txt
+!.ASSETS*

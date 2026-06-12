@@ -132,7 +132,7 @@ python3 scripts/fetch-webapp-assets.py
 python3 scripts/fetch-pad1-webapp-assets.py
 python3 scripts/fetch-download-assets.py
 python3 scripts/fetch-weather-icons.py
-./scripts/apply-local-index-html-patch.sh
+python3 scripts/apply-local-index-html-patch.py
 ```
 
 ### Step 4: Create a security certificate

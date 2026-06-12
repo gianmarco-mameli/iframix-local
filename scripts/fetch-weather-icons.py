@@ -173,14 +173,14 @@ def resolve_host(host, dns_server=DNS_SERVER, timeout=10.0):
     return None
 
 
-def build_opener_with_pinned_host(host):
+def build_opener_with_pinned_host(host, dns_server=DNS_SERVER):
     """Return ``(opener, ip)`` that routes ``host`` requests to a fixed IP.
 
     Implemented by replacing the URL host with the resolved IP and sending
     the original hostname in the ``Host`` header. This sidesteps any local
     DNS override that might point the hostname at this very server.
     """
-    ip = resolve_host(host)
+    ip = resolve_host(host, dns_server=dns_server)
     if ip is None:
         return None, None
     return urllib.request.build_opener(), ip
@@ -232,6 +232,9 @@ def main():
         "--base-url", default=DEFAULT_BASE_URL,
         help=f"Upstream icon base URL (default: {DEFAULT_BASE_URL})")
     parser.add_argument(
+        "--dns-server", default=DNS_SERVER,
+        help="DNS server for upstream resolution (default: %(default)s)")
+    parser.add_argument(
         "--force", action="store_true",
         help="Refetch icons that already exist on disk")
     args = parser.parse_args()
@@ -244,7 +247,8 @@ def main():
         print(f"error: cannot parse host from {args.base_url}", file=sys.stderr)
         return 1
 
-    opener, ip = build_opener_with_pinned_host(host)
+    opener, ip = build_opener_with_pinned_host(
+        host, dns_server=args.dns_server)
     if opener is None:
         return 1
     if ip != host:

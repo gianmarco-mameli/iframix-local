@@ -37,7 +37,7 @@ import argparse
 import os
 import re
 import socket
-import sys
+# import sys
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
@@ -121,11 +121,11 @@ def _patched_getaddrinfo(host, port, *args, **kwargs):
     return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port_int))]
 
 
-def install_pinned_resolver(host: str) -> str:
-    ip = dns_a_lookup(host)
+def install_pinned_resolver(host: str, dns_server: str = DNS_SERVER) -> str:
+    ip = dns_a_lookup(host, dns_server=dns_server)
     if ip is None:
         raise SystemExit(
-            f"could not resolve {host} via DNS {DNS_SERVER}")
+            f"could not resolve {host} via DNS {dns_server}")
     _PINNED_IPS[host] = ip
     socket.getaddrinfo = _patched_getaddrinfo
     return ip
@@ -370,16 +370,20 @@ def print_report(results: list[tuple[str, bool, str]]) -> None:
 # ---------------------------------------------------------------------------
 
 def main(argv: list[str] | None = None) -> int:
-    argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(
         description="Fetch the iFramix download webapp assets"
-    ).parse_args(argv)
+    )
+    parser.add_argument(
+        "--dns-server", default=DNS_SERVER,
+        help="DNS server for upstream resolution (default: %(default)s).")
+    args = parser.parse_args(argv)
 
     if not os.path.isdir(WEBAPP_DIR):
         raise SystemExit(f"webapp directory not found: {WEBAPP_DIR}")
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-    ip = install_pinned_resolver(UPSTREAM_HOST)
-    print(f"Resolved {UPSTREAM_HOST} via {DNS_SERVER} -> {ip}")
+    ip = install_pinned_resolver(UPSTREAM_HOST, dns_server=args.dns_server)
+    print(f"Resolved {UPSTREAM_HOST} via {args.dns_server} -> {ip}")
     print()
 
     results: list[tuple[str, bool, str]] = []
