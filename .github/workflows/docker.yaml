@@ -1,14 +1,11 @@
 name: docker
-
 on:
   create:
 
   # Allow to run this workflow manually from the Actions tab
   workflow_dispatch:
-
 env:
   VERSION: ${{ github.ref_name }}
-
 jobs:
   docker:
     if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
