@@ -133,10 +133,10 @@ def run_api() -> None:
 
     import src.api.config as cfg
 
-    cfg.MQTT_BROKER_HOST = os.environ.get("BROKER_HOST", "mosquitto")
-    cfg.MQTT_BROKER_PORT = int(os.environ.get("BROKER_PORT", "1883"))
-    cfg.MOSQUITTO_WS_HOST = os.environ.get("BROKER_HOST", "mosquitto")
-    cfg.MOSQUITTO_WS_PORT = int(os.environ.get("BROKER_WS_PORT", "9001"))
+    # cfg.MQTT_BROKER_HOST = os.environ.get("BROKER_HOST", "mosquitto")
+    # cfg.MQTT_BROKER_PORT = int(os.environ.get("BROKER_PORT", "1883"))
+    # cfg.MOSQUITTO_WS_HOST = os.environ.get("BROKER_HOST", "mosquitto")
+    # cfg.MOSQUITTO_WS_PORT = int(os.environ.get("BROKER_WS_PORT", "9001"))
 
     extra = os.environ.get("API_EXTRA_ARGS", "").strip()
     extra_parts = shlex.split(extra) if extra else []

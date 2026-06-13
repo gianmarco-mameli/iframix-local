@@ -82,10 +82,6 @@ WORKDIR /home/app
 
 ENV PATH="/home/app/deps/bin:$PATH"
 
-ENV BROKER_HOST=mosquitto
-ENV BROKER_PORT=1883
-ENV BROKER_WS_PORT=9001
-
 ENV CERT_FILE=/home/app/server.crt
 # trunk-ignore(trivy/DS-0031)
 ENV KEY_FILE=/home/app/server.key
@@ -98,6 +94,7 @@ ENV API_EXTRA_ARGS=""
 ENV IFRAMIX_BASE_PATH=/srv
 
 EXPOSE 443
+EXPOSE 8080
 
 # HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
 #     CMD /home/app/.venv/bin/python -c "import socket; sock = socket.create_connection(('127.0.0.1', 443), 5); sock.close()" || exit 1

@@ -14,14 +14,14 @@ PHOTOS_TEMP_DIR = os.path.join(BASE_PATH, "photos_temp")
 # and cached on disk under thumbnails/{normal,ai}/{device_id}/. Gitignored.
 THUMBNAILS_DIR = os.path.join(BASE_PATH, "thumbnails")
 LOGS_DIR = os.path.join(BASE_PATH, "logs")
-WEBAPP_DIR = os.path.join(SCRIPT_DIR, "webapp")
-WEATHER_ICONS_DIR = os.path.join(SCRIPT_DIR, "weather_icons")
-MOSQUITTO_WS_HOST = "localhost"
-MOSQUITTO_WS_PORT = 9001
-MQTT_BROKER_HOST = "localhost"
-MQTT_BROKER_PORT = 1883
-MQTT_USER = "iframix_local_api"
-MQTT_PASS = "notvalidated"
+WEBAPP_DIR = os.path.join(BASE_PATH, "webapp")
+WEATHER_ICONS_DIR = os.path.join(BASE_PATH, "weather_icons")
+MQTT_WS_HOST = os.getenv("MQTT_WS_HOST", "localhost")
+MQTT_WS_PORT = int(os.getenv("MQTT_WS_PORT", 9001))
+MQTT_BROKER_HOST = os.getenv("MQTT_BROKER_HOST", "localhost")
+MQTT_BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT", 1883))
+MQTT_USER = os.getenv("MQTT_USER", "")
+MQTT_PASS = os.getenv("MQTT_PASS", "")
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
 INDEX_HTML_FILE = "index.html"
 
