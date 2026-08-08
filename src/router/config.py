@@ -5,14 +5,16 @@ import random
 import threading
 import time
 
-BROKER_HOST = "localhost"
-BROKER_PORT = 1883
-BROKER_WS_PORT = 9001
-MQTT_USER = "iframix_local_router"
-MQTT_PASS = "notvalidated"
+BROKER_HOST = os.getenv("MQTT_BROKER_HOST", "localhost")
+BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT", 1883))
+BROKER_WS_PORT = int(os.getenv("MQTT_WS_PORT", 9001))
+MQTT_USER = os.getenv("MQTT_USER", "")
+MQTT_PASS = os.getenv("MQTT_PASS", "")
 
 SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DB_FILE = os.path.join(SCRIPT_DIR, "icharguard.db")
+# Override this with env var IFRAMIX_BASE_PATH to relocate runtime data.
+BASE_PATH = os.path.abspath(os.getenv("IFRAMIX_BASE_PATH", SCRIPT_DIR))
+DB_FILE = os.path.join(BASE_PATH, "icharguard.db")
 
 # Device registry — maps device UUID -> latest known info (in-memory cache)
 devices = {}
